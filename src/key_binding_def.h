@@ -1,4 +1,4 @@
-/* Copyright (C) 2011-2012 G.P. Halkes
+/* Copyright (C) 2018 G.P. Halkes
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License version 3, as
    published by the Free Software Foundation.
@@ -11,27 +11,14 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef T3_WIDGET_GOTODIALOG_H
-#define T3_WIDGET_GOTODIALOG_H
 
-#include <t3widget/dialogs/dialog.h>
-#include <t3widget/widgets/textfield.h>
-
-namespace t3_widget {
-
-class T3_WIDGET_API goto_dialog_t : public dialog_t {
- private:
-  text_field_t *number_line;
-
-  void ok_activate();
-
- public:
-  goto_dialog_t();
-  bool set_size(optint height, optint width) override;
-  void reset();
-
-  T3_WIDGET_SIGNAL(activate, void, int);
+// Explicitly doesn't have an include guard!
+#define _T3_ACTION(action, name, ...) {ACTION_##action, name, {__VA_ARGS__}},
+key_bindings_t<_T3_ACTION_TYPE::Action> _T3_ACTION_TYPE::key_bindings{
+#include _T3_ACTION_FILE
 };
+#undef _T3_ACTION
 
-};  // namespace
-#endif
+key_bindings_t<_T3_ACTION_TYPE::Action> *_T3_ACTION_TYPE::get_key_binding() {
+  return &key_bindings;
+}

@@ -16,45 +16,43 @@
 
 namespace t3_widget {
 
-expander_group_t::expander_group_t(void) : expanded_widget(NULL), height(0) {}
-expander_group_t::~expander_group_t(void) {}
+expander_group_t::expander_group_t() : expanded_widget(nullptr), height(0) {}
+expander_group_t::~expander_group_t() {}
 
 void expander_group_t::add_expander(expander_t *expander) {
-	if (expander == NULL)
-		return;
-	expander->connect_expanded(signals::bind(signals::mem_fun(this, &expander_group_t::widget_expanded), expander));
-	expander->set_expanded(false);
-	height++;
+  if (expander == nullptr) return;
+  expander->connect_expanded(
+      signals::bind(signals::mem_fun(this, &expander_group_t::widget_expanded), expander));
+  expander->set_expanded(false);
+  height++;
 }
 
 void expander_group_t::widget_expanded(bool is_expanded, expander_t *source) {
-	if (is_expanded) {
-		if (expanded_widget != NULL) {
-			expanded_widget->set_expanded(false);
-			/* This will generate another signal which will reduce the height. */
-		}
-		expanded_height = t3_win_get_height(source->get_base_window()) - 1;
-		height += expanded_height;
-		expanded_widget = source;
-	} else {
-		if (source == expanded_widget) {
-			expanded_widget = NULL;
-			height -= expanded_height;
-		}
-	}
-	expanded(is_expanded);
+  if (is_expanded) {
+    if (expanded_widget != nullptr) {
+      expanded_widget->set_expanded(false);
+      /* This will generate another signal which will reduce the height. */
+    }
+    expanded_height = t3_win_get_height(source->get_base_window()) - 1;
+    height += expanded_height;
+    expanded_widget = source;
+  } else {
+    if (source == expanded_widget) {
+      expanded_widget = nullptr;
+      height -= expanded_height;
+    }
+  }
+  expanded(is_expanded);
 }
 
-void expander_group_t::collapse(void) {
-	if (expanded_widget != NULL) {
-		expanded_widget->set_expanded(false);
-		expanded_widget = NULL;
-		expanded(false);
-	}
+void expander_group_t::collapse() {
+  if (expanded_widget != nullptr) {
+    expanded_widget->set_expanded(false);
+    expanded_widget = nullptr;
+    expanded(false);
+  }
 }
 
-int expander_group_t::get_group_height(void) {
-	return height;
-}
+int expander_group_t::get_group_height() { return height; }
 
-}; // namespace
+};  // namespace

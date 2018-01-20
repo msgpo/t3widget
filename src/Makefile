@@ -11,9 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#COMPILER := gcc
-include Makefile.signal.conf
-
+COMPILER := gcc
 SOURCES.libt3widget.la := \
 	autocompleter.cc \
 	clipboard.cc \
@@ -22,6 +20,7 @@ SOURCES.libt3widget.la := \
 	findcontext.cc \
 	interfaces.cc \
 	key.cc \
+	key_binding.cc \
 	log.cc \
 	main.cc \
 	mouse.cc \
@@ -70,6 +69,7 @@ SOURCES.libt3widget.la := \
 SOURCES.x11.la := x11.cc
 
 CXXLTTARGETS := libt3widget.la x11.la
+EXTRATARGETS := .clang-tidy-opts
 #================================================#
 # NO RULES SHOULD BE DEFINED BEFORE THIS INCLUDE #
 #================================================#
@@ -85,12 +85,7 @@ CXXFLAGS += -D_T3_WIDGET_INTERNAL
 CXXFLAGS += -DHAS_STRDUP
 CXXFLAGS += -pthread
 CXXFLAGS += `pkg-config --cflags libpcre`
-ifdef CPP11
 CXXFLAGS += -std=c++11
-CXXFLAGS += -DCXX11SWITCH=1
-else
-CXXFLAGS += `pkg-config --cflags sigc++-2.0`
-endif
 # Set default visibility to hidden, so we find out when we forgot to export something
 CXXFLAGS += -fvisibility=hidden
 CXXFLAGS += -DWITH_X11
@@ -121,7 +116,22 @@ LDLIBS.x11.la += `pkg-config --libs xcb`
 
 LDLIBS.x11.la += -module -avoid-version -L.libs -lt3widget -shrext .mod
 
+clang-format:
+	clang-format -i *.cc *.h */*.cc */*.h
+
+.clang-tidy-opts: Makefile
+	$(call _GENDIR,.clang-tidy,$<)
+	@echo "-xc++ -std=c++11 $(filter -D%, $(CXXFLAGS)) $(filter -I%, $(CXXFLAGS))" > .clang-tidy-opts
+
+clang-tidy: .clang-tidy-opts $(patsubst %, clang-tidy/%, $(foreach STEM, $(CXXLTTARGETS), $(SOURCES.$(STEM)))) \
+	$(patsubst %.cc, clang-tidy/%.h, $(foreach STEM, $(CXXLTTARGETS), $(SOURCES.$(STEM))))
+
+clang-tidy/%:
+	@if [[ -f "$*" ]] ; then echo "[CLANG-TIDY] $*" ; clang-tidy $* -- `cat .clang-tidy-opts` ; fi
 
 x11.la: | libt3widget.la
 
-.PHONY: links
+clean::
+	rm -f .clang-tidy-opts
+
+.PHONY: clang-format clang-tidy

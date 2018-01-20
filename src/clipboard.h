@@ -14,28 +14,32 @@
 #ifndef T3_WIDGET_CLIPBOARD_H
 #define T3_WIDGET_CLIPBOARD_H
 
-#include <t3widget/widget_api.h>
-#include <t3widget/ptr.h>
 #include <string>
+#include <t3widget/ptr.h>
+#include <t3widget/widget_api.h>
 
-#define WITH_CLIPBOARD_LOCK(code) { t3_widget::ensure_clipboard_lock_t _lock; code }
+#define WITH_CLIPBOARD_LOCK(code)             \
+  {                                           \
+    t3_widget::ensure_clipboard_lock_t _lock; \
+    code                                      \
+  }
 
 namespace t3_widget {
 
-T3_WIDGET_API linked_ptr<std::string>::t get_clipboard(void);
-T3_WIDGET_API linked_ptr<std::string>::t get_primary(void);
+T3_WIDGET_API linked_ptr<std::string>::t get_clipboard();
+T3_WIDGET_API linked_ptr<std::string>::t get_primary();
 
 T3_WIDGET_API void set_clipboard(std::string *str);
 T3_WIDGET_API void set_primary(std::string *str);
-T3_WIDGET_API void release_selections(void);
-T3_WIDGET_API void lock_clipboard(void);
-T3_WIDGET_API void unlock_clipboard(void);
+T3_WIDGET_API void release_selections();
+T3_WIDGET_API void lock_clipboard();
+T3_WIDGET_API void unlock_clipboard();
 
 class T3_WIDGET_API ensure_clipboard_lock_t {
-	public:
-		ensure_clipboard_lock_t(void) { lock_clipboard(); }
-		~ensure_clipboard_lock_t(void) { unlock_clipboard(); }
+ public:
+  ensure_clipboard_lock_t() { lock_clipboard(); }
+  ~ensure_clipboard_lock_t() { unlock_clipboard(); }
 };
 
-}; // namespace
+};  // namespace
 #endif

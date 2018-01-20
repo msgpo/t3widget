@@ -23,8 +23,9 @@
    dependent on the X11 headers. */
 
 #include <string>
-#include "widget_api.h"
+
 #include "ptr.h"
+#include "widget_api.h"
 
 namespace t3_widget {
 
@@ -34,15 +35,15 @@ T3_WIDGET_API extern linked_ptr<std::string>::t primary_data;
 #define EXTCLIPBOARD_VERSION 1
 
 struct extclipboard_interface_t {
-	int version;
-	bool (*init)(void);
-	void (*release_selections)(void);
-	linked_ptr<std::string>::t (*get_selection)(bool clipboard);
-	void (*claim_selection)(bool clipboard, std::string *data);
-	void (*lock)(void);
-	void (*unlock)(void);
-	void (*stop)(void);
+  int version;
+  bool (*init)();
+  void (*release_selections)();
+  linked_ptr<std::string>::t (*get_selection)(bool clipboard);
+  void (*claim_selection)(bool clipboard, std::string *data);
+  void (*lock)();
+  void (*unlock)();
+  void (*stop)();
 };
 
-}; // namespace
+};  // namespace
 #endif

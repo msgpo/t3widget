@@ -16,37 +16,35 @@
 namespace t3_widget {
 
 bool dummy_widget_t::process_key(key_t key) {
-	(void) key;
-	return false;
+  (void)key;
+  return false;
 }
 
 bool dummy_widget_t::resize(optint height, optint width, optint top, optint left) {
-	(void) height;
-	(void) width;
-	(void) top;
-	(void) left;
-	return true;
+  (void)height;
+  (void)width;
+  (void)top;
+  (void)left;
+  return true;
 }
 
-void dummy_widget_t::update_contents(void) { return; }
+void dummy_widget_t::update_contents() { return; }
 
-void dummy_widget_t::show(void) {}
+void dummy_widget_t::show() {}
 
-void dummy_widget_t::hide(void) {}
+void dummy_widget_t::hide() {}
 
 void dummy_widget_t::set_position(optint top, optint left) {
-	(void) top;
-	(void) left;
+  (void)top;
+  (void)left;
 }
 
 bool dummy_widget_t::set_size(optint height, optint width) {
-	(void) height;
-	(void) width;
-	return true;
+  (void)height;
+  (void)width;
+  return true;
 }
 
-t3_window_t *dummy_widget_t::get_base_window(void) {
-	return NULL;
-}
+t3_window_t *dummy_widget_t::get_base_window() { return nullptr; }
 
-}; // namespace
+};  // namespace
